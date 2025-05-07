@@ -82,6 +82,19 @@ export default function Header() {
                                 className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-full transition-colors"
                                 onClick={toggleProfileMenu}
                               >
+                                {profile?.avatar_url ? (
+                                  <div className="relative w-6 h-6 rounded-full overflow-hidden mr-2 border border-gray-300 dark:border-gray-600">
+                                    <img 
+                                      src={profile.avatar_url} 
+                                      alt="Profile" 
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                  </svg>
+                                )}
                                 <span className="mr-1">{profile?.full_name || user.email}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-transform ${isProfileMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -168,7 +181,22 @@ export default function Header() {
                           className="block text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 font-medium"
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          Profile
+                          <div className="flex items-center">
+                            {profile?.avatar_url ? (
+                              <div className="relative w-6 h-6 rounded-full overflow-hidden mr-2 border border-gray-300 dark:border-gray-600">
+                                <img 
+                                  src={profile.avatar_url} 
+                                  alt="Profile" 
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                              </svg>
+                            )}
+                            Profile
+                          </div>
                         </Link>
                       </li>
                       <li>

@@ -132,3 +132,30 @@ To create an admin user:
 ## License
 
 This project is licensed under the MIT License.
+
+## Pengaturan Storage untuk Foto Profil
+
+Untuk mengaktifkan fitur foto profil, perlu dilakukan pengaturan bucket storage di Supabase:
+
+1. Login ke dashboard Supabase project Anda
+2. Navigasikan ke menu "Storage" di sidebar
+3. Klik tombol "Create new bucket"
+4. Masukkan nama bucket: `avatars`
+5. Centang opsi "Public bucket" (agar gambar bisa diakses publik)
+6. Klik "Create bucket" untuk menyelesaikan pembuatan bucket
+7. Setelah bucket dibuat, masuk ke tab "Policies" 
+8. Tambahkan policy baru dengan klik "Add Policies" dan pilih "Create custom policies"
+9. Buatlah policy dengan pengaturan berikut untuk mengizinkan upload:
+   - Policy name: `Allow authenticated uploads`
+   - Allowed operation: `INSERT`
+   - Target roles: `authenticated`
+   - Policy definition: `(auth.uid() = auth.uid())`
+   - Klik "Save policy"
+10. Tambahkan policy lainnya untuk mengizinkan akses publik:
+    - Policy name: `Public read access`
+    - Allowed operation: `SELECT`
+    - Target roles: `public`
+    - Policy definition: `(true)`
+    - Klik "Save policy"
+
+Setelah menyelesaikan pengaturan ini, pengguna dapat mengunggah dan mengubah foto profil mereka.
