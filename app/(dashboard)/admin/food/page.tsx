@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Food } from '@/app/utils/supabase-types';
 
-export default async function ManageFoodPage({
-  searchParams,
-}: {
-  searchParams: { canteen?: string };
-}) {
+type Props = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default async function ManageFoodPage({ searchParams }: Props) {
   const canteens = await getCanteens();
   
   if (canteens.length === 0) {
@@ -40,8 +40,8 @@ export default async function ManageFoodPage({
     );
   }
 
-  // Handle specific canteen filter
-  let selectedCanteenId = searchParams.canteen;
+  // Handle specific canteen filter - fix the type and access to avoid the error
+  const selectedCanteenId = typeof searchParams.canteen === 'string' ? searchParams.canteen : undefined;
   let foods: Food[] = [];
   let selectedCanteen;
   
@@ -68,7 +68,7 @@ export default async function ManageFoodPage({
         </div>
         {selectedCanteenId && (
           <Link
-            href={`/admin/food/new?canteen=${selectedCanteenId}`}
+            href={`/admin/food/new${selectedCanteenId ? `?canteen=${selectedCanteenId}` : ''}`}
             className="btn-primary inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 rounded-lg px-4 py-2.5 text-white shadow-sm hover:shadow-md transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -203,7 +203,7 @@ export default async function ManageFoodPage({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link
-                          href={`/admin/food/edit/${food.id}?canteen=${selectedCanteenId}`}
+                          href={`/admin/food/edit/${food.id}${selectedCanteenId ? `?canteen=${selectedCanteenId}` : ''}`}
                           className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-md transition-colors inline-flex items-center"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -229,7 +229,7 @@ export default async function ManageFoodPage({
                             Kantin ini belum memiliki menu makanan. Tambahkan menu makanan baru untuk mulai menerima pesanan.
                           </p>
                           <Link 
-                            href={`/admin/food/new?canteen=${selectedCanteenId}`} 
+                            href={`/admin/food/new${selectedCanteenId ? `?canteen=${selectedCanteenId}` : ''}`} 
                             className="btn-primary inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 rounded-lg px-5 py-2.5 text-white shadow-sm hover:shadow-md transition-all"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

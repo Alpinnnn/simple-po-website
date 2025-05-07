@@ -6,7 +6,7 @@ import { useAuth } from '../providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  const { user, profile, signOut, loading } = useAuth();
+  const { user, profile, signOut, loading, signingOut } = useAuth();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,8 +18,9 @@ export default function Header() {
   }, []);
 
   const handleSignOut = async () => {
+    if (signingOut) return; // Prevent multiple sign out attempts
+    
     await signOut();
-    router.push('/login');
   };
 
   const toggleMenu = () => {
@@ -114,9 +115,10 @@ export default function Header() {
                                       setIsProfileMenuOpen(false);
                                       handleSignOut();
                                     }}
-                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-500 dark:hover:text-blue-400"
+                                    disabled={signingOut}
+                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-500 dark:hover:text-blue-400 disabled:opacity-50"
                                   >
-                                    Sign Out
+                                    {signingOut ? 'Signing out...' : 'Sign Out'}
                                   </button>
                                 </div>
                               )}
@@ -202,9 +204,10 @@ export default function Header() {
                       <li>
                         <button
                           onClick={handleSignOut}
-                          className="block w-full text-left text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 font-medium"
+                          disabled={signingOut}
+                          className="block w-full text-left text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 font-medium disabled:opacity-50"
                         >
-                          Sign Out
+                          {signingOut ? 'Signing out...' : 'Sign Out'}
                         </button>
                       </li>
                     </>
