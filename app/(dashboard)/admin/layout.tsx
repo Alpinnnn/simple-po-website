@@ -10,14 +10,14 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && (!user || user.user_metadata.role !== 'admin')) {
+    if (!loading && (!user || !profile || profile.role !== 'admin')) {
       router.push('/');
     }
-  }, [user, loading, router]);
+  }, [user, profile, loading, router]);
 
   if (loading) {
     return (
@@ -27,7 +27,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!user || user.user_metadata.role !== 'admin') {
+  if (!user || !profile || profile.role !== 'admin') {
     return null;
   }
 

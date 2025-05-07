@@ -6,7 +6,7 @@ import { useAuth } from '../providers/AuthProvider';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
-  const { user, signOut, loading } = useAuth();
+  const { user, profile, signOut, loading } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -28,9 +28,9 @@ export default function Header() {
                 {user ? (
                   <>
                     <li>
-                      <span className="text-gray-600">Hello, {user.user_metadata.full_name || user.email}</span>
+                      <span className="text-gray-600">Hello, {profile?.full_name || user.email}</span>
                     </li>
-                    {user.user_metadata.role === 'admin' && (
+                    {profile?.role === 'admin' && (
                       <li>
                         <Link
                           href="/admin"
