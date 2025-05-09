@@ -10,6 +10,8 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailLoginSent, setEmailLoginSent] = useState(false);
+  const [emailLoginLoading, setEmailLoginLoading] = useState(false);
   const router = useRouter();
   const supabase = createBrowserSupabaseClient();
 
@@ -37,6 +39,37 @@ export default function LoginForm() {
     }
   };
 
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      setError('Email harus diisi');
+      return;
+    }
+    
+    setEmailLoginLoading(true);
+    setError(null);
+    
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setEmailLoginSent(true);
+    } catch (err: any) {
+      setError(err.message || 'Terjadi kesalahan saat mengirim link login');
+    } finally {
+      setEmailLoginLoading(false);
+    }
+  };
+
   return (
     <div className="w-full">
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">Login</h2>
@@ -44,6 +77,12 @@ export default function LoginForm() {
       {error && (
         <div className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 p-3 rounded mb-4" role="alert">
           {error}
+        </div>
+      )}
+      
+      {emailLoginSent && (
+        <div className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 p-3 rounded mb-4" role="alert">
+          Link login telah dikirim ke email Anda. Silakan cek inbox Anda.
         </div>
       )}
 
@@ -64,9 +103,14 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Password
-          </label>
+          <div className="flex items-center justify-between">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Password
+            </label>
+            <Link href="/forgot-password" className="text-sm font-medium text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+              Lupa password?
+            </Link>
+          </div>
           <input
             id="password"
             name="password"
@@ -85,6 +129,26 @@ export default function LoginForm() {
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </div>
+        
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Atau</span>
+          </div>
+        </div>
+        
+        <div>
+          <button
+            type="button"
+            onClick={handleEmailLogin}
+            disabled={emailLoginLoading}
+            className="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {emailLoginLoading ? 'Mengirim...' : 'Login dengan Email'}
           </button>
         </div>
       </form>

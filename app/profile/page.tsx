@@ -16,6 +16,8 @@ export default function ProfilePage() {
   const [message, setMessage] = useState({ type: '', text: '' });
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [avatarUrlInput, setAvatarUrlInput] = useState('');
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const [resetPasswordSent, setResetPasswordSent] = useState(false);
   
   useEffect(() => {
     if (!loading && !user) {
@@ -129,6 +131,39 @@ export default function ProfilePage() {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+  
+  const handleResetPassword = async () => {
+    if (!user?.email) return;
+    
+    setResetPasswordLoading(true);
+    setMessage({ type: '', text: '' });
+    
+    try {
+      const supabase = createBrowserSupabaseClient();
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setResetPasswordSent(true);
+      setMessage({ 
+        type: 'success', 
+        text: 'Email untuk reset password telah dikirim. Silakan periksa inbox email Anda.' 
+      });
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : 'Terjadi kesalahan saat mengirim reset password' 
+      });
+    } finally {
+      setResetPasswordLoading(false);
     }
   };
   
@@ -249,16 +284,35 @@ export default function ProfilePage() {
             />
           </div>
           
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Email
             </label>
-            <input
-              type="email"
-              value={user?.email || ''}
-              disabled
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400"
-            />
+            <div className="flex flex-col md:flex-row md:items-center md:space-x-2">
+              <input
+                type="email"
+                value={user?.email || ''}
+                disabled
+                className="w-full md:flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={handleResetPassword}
+                disabled={resetPasswordLoading || resetPasswordSent}
+                className="mt-2 md:mt-0 px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {resetPasswordLoading ? (
+                  <span className="flex items-center justify-center">
+                    <span className="animate-spin h-4 w-4 mr-2 border-t-2 border-b-2 border-white rounded-full"></span>
+                    Mengirim...
+                  </span>
+                ) : resetPasswordSent ? (
+                  'Email Terkirim'
+                ) : (
+                  'Reset Password'
+                )}
+              </button>
+            </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Email tidak dapat diubah
             </p>
