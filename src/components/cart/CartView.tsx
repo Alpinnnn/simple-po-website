@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { formatCurrency } from '@/lib/currency';
 
 interface CartViewProps {
   isModal?: boolean;
@@ -67,7 +68,7 @@ export default function CartView({ isModal = false }: CartViewProps) {
         </Button>
         <div className="text-right">
           <p className="text-xl font-bold text-primary">
-            Total: ${getCartTotal().toFixed(2)}
+            Total: {formatCurrency(getCartTotal())}
           </p>
         </div>
       </CardFooter>

@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
+import { formatCurrency, formatSimpleCurrency, CurrencySettings } from '@/lib/currency';
 
 const checkoutSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -29,7 +30,8 @@ interface CheckoutFormProps {
 }
 
 // Nomor WhatsApp admin untuk dikirimkan pre-order
-const ADMIN_WHATSAPP = "+6285156313792";
+// Menggunakan environment variable dengan fallback ke nomor default jika tidak tersedia
+const ADMIN_WHATSAPP = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || "+628588816751";
 
 export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: CheckoutFormProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
@@ -48,10 +50,10 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
   // Fungsi untuk format pesan WhatsApp
   const formatWhatsAppMessage = (formData: CheckoutFormValues) => {
     const items = cartItems.map(item => 
-      `- ${item.product.name} (${item.quantity}x) @ $${item.product.price} = $${(item.quantity * item.product.price).toFixed(2)}`
+      `- ${item.product.name} (${item.quantity}x) @ ${formatSimpleCurrency(item.product.price)} = ${formatSimpleCurrency(item.quantity * item.product.price)}`
     ).join('\n');
 
-    const total = getCartTotal().toFixed(2);
+    const total = formatSimpleCurrency(getCartTotal());
 
     return encodeURIComponent(
       `*PRE-ORDER BARU*\n\n` +
@@ -61,7 +63,8 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
       `Alamat: ${formData.address}\n` +
       `${formData.notes ? `Catatan: ${formData.notes}\n` : ''}` +
       `\n*Detail Pesanan:*\n${items}\n\n` +
-      `*Total: $${total}*`
+      `*Total: ${total}*\n` +
+      `*Mata Uang: ${CurrencySettings.code}*`
     );
   };
 
@@ -143,7 +146,7 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting || cartItems.length === 0}>
-            {isSubmitting ? 'Submitting Pre-Order...' : `Submit Pre-Order ($${getCartTotal().toFixed(2)})`}
+            {isSubmitting ? 'Submitting Pre-Order...' : `Submit Pre-Order (${formatCurrency(getCartTotal())})`}
           </Button>
         </form>
       </div>
@@ -182,7 +185,7 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
             <Textarea id="notesPage" {...register("notes")} className="mt-1 min-h-[80px]" />
           </div>
           <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting || cartItems.length === 0}>
-            {isSubmitting ? 'Submitting Pre-Order...' : `Submit Pre-Order ($${getCartTotal().toFixed(2)})`}
+            {isSubmitting ? 'Submitting Pre-Order...' : `Submit Pre-Order (${formatCurrency(getCartTotal())})`}
           </Button>
         </form>
       </CardContent>

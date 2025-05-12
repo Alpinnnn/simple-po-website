@@ -10,7 +10,9 @@ Aplikasi pre-order modern berbasis web dengan integrasi WhatsApp untuk restoran,
 - ✅ Form checkout dengan validasi data
 - ✅ Integrasi WhatsApp untuk pengiriman pesanan
 - ✅ Theme warna yang dapat disesuaikan
+- ✅ Mata uang yang dapat dikonfigurasi (IDR, USD, dll)
 - ✅ Tampilan admin untuk pengelolaan produk (coming soon)
+- ✅ OpenGraph metadata untuk berbagi di media sosial
 
 ## Teknologi yang Digunakan
 
@@ -33,7 +35,7 @@ Aplikasi pre-order modern berbasis web dengan integrasi WhatsApp untuk restoran,
 1. Clone repository ini
 
 ```bash
-git clone [URL_REPOSITORY]
+git clone https://github.com/Alpinnnn/simple-po-website.git
 cd sistem-po
 ```
 
@@ -47,7 +49,21 @@ yarn install
 pnpm install
 ```
 
-3. Jalankan server development
+3. Konfigurasi environment variables (opsional)
+
+Buat file `.env.local` di root project dan tambahkan variabel berikut:
+
+```
+# Nomor WhatsApp Admin (opsional, dengan default +628588816751)
+NEXT_PUBLIC_ADMIN_WHATSAPP="+62812345678"
+
+# Konfigurasi Mata Uang (opsional, dengan default USD)
+NEXT_PUBLIC_CURRENCY_SYMBOL="Rp"
+NEXT_PUBLIC_CURRENCY_CODE="IDR"
+NEXT_PUBLIC_CURRENCY_LOCALE="id-ID"
+```
+
+4. Jalankan server development
 
 ```bash
 npm run dev
@@ -57,18 +73,26 @@ yarn dev
 pnpm dev
 ```
 
-4. Buka [http://localhost:9002](http://localhost:9002) di browser untuk melihat aplikasi
+5. Buka [http://localhost:9002](http://localhost:9002) di browser untuk melihat aplikasi
 
 ## Konfigurasi
 
-### Mengganti Nomor WhatsApp Admin
+### Konfigurasi WhatsApp dan Mata Uang
 
-Untuk mengganti nomor WhatsApp yang menerima pesanan, buka file `src/components/cart/CheckoutForm.tsx` dan ubah nilai konstanta `ADMIN_WHATSAPP`:
+Aplikasi ini menggunakan environment variables untuk konfigurasi utama:
 
-```typescript
-// Nomor WhatsApp admin untuk dikirimkan pre-order
-const ADMIN_WHATSAPP = "+628588816751"; // Ganti dengan nomor WhatsApp Anda
-```
+1. **Nomor WhatsApp Admin**
+   - Variable: `NEXT_PUBLIC_ADMIN_WHATSAPP`
+   - Format: String dengan format nomor internasional (contoh: "+628588816751")
+   - Default: "+628588816751"
+
+2. **Mata Uang**
+   - `NEXT_PUBLIC_CURRENCY_SYMBOL`: Simbol mata uang (contoh: "Rp", "$", "€")
+   - `NEXT_PUBLIC_CURRENCY_CODE`: Kode mata uang (contoh: "IDR", "USD", "EUR")
+   - `NEXT_PUBLIC_CURRENCY_LOCALE`: Locale untuk format angka (contoh: "id-ID", "en-US")
+   - Default: "$" dengan kode "USD" dan locale "en-US"
+
+Anda dapat mengubah konfigurasi ini dengan membuat file `.env.local` di root project, atau mengatur environment variables di platform deployment Anda (Vercel, Netlify, dll).
 
 ### Konfigurasi Tema
 
@@ -82,6 +106,29 @@ Warna tema dapat diubah di file `src/app/globals.css`. Aplikasi menggunakan CSS 
   /* ... warna lainnya ... */
 }
 ```
+
+### Konfigurasi OpenGraph
+
+Aplikasi ini mendukung OpenGraph untuk membuat pratinjau yang menarik saat dibagikan di media sosial. Konfigurasi metadata ada di `src/app/layout.tsx`:
+
+```typescript
+export const metadata: Metadata = {
+  // ... konfigurasi lainnya ...
+  openGraph: {
+    // Ubah sesuai dengan detail website Anda
+    type: 'website',
+    locale: 'id_ID',
+    url: 'https://orderease.vercel.app',
+    siteName: 'OrderEase',
+    title: 'OrderEase - Sistem Pre-Order Makanan',
+    description: 'Pesan makanan favorit Anda dengan mudah...',
+    // ...
+  },
+  // ...
+};
+```
+
+Gambar OpenGraph dihasilkan secara dinamis dari file `src/app/opengraph-image.tsx` dan `src/app/twitter-image.tsx`.
 
 ## Penggunaan
 

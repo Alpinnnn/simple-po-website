@@ -15,6 +15,7 @@ import CheckoutForm from '@/components/cart/CheckoutForm';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { formatCurrency } from '@/lib/currency';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ export default function CartModal({ isOpen, onOpenChange }: CartModalProps) {
               <div>
                 <p className="text-lg font-semibold text-muted-foreground">Total:</p>
                 <p className="text-2xl font-bold text-primary">
-                  ${getCartTotal().toFixed(2)}
+                  {formatCurrency(getCartTotal())}
                 </p>
               </div>
                {/* The CheckoutForm contains the primary submission button. This can be a "Close" button. */}

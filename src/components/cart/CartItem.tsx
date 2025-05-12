@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { Trash2, Plus, Minus, Package } from 'lucide-react';
 import type { JSX } from 'react'; 
+import { formatCurrency, formatSimpleCurrency } from '@/lib/currency';
 
 interface CartItemProps {
   item: CartItemType; // This item.product is now FoodProduct
@@ -40,7 +41,7 @@ export default function CartItem({ item }: CartItemProps): JSX.Element {
       <div className="flex-grow">
         <h3 className="font-semibold text-card-foreground">{item.product.name}</h3>
         <p className="text-sm text-muted-foreground">
-          ${item.product.price.toFixed(2)} each
+          {formatCurrency(item.product.price)} each
         </p>
          {/* item.product.storeName is removed as FoodProduct doesn't have it.
              If you need Canteen Name, it would require different data structure or fetching.
@@ -77,7 +78,7 @@ export default function CartItem({ item }: CartItemProps): JSX.Element {
         </Button>
       </div>
       <p className="font-semibold w-20 text-right text-primary">
-        ${(item.product.price * item.quantity).toFixed(2)}
+        {formatCurrency(item.product.price * item.quantity)}
       </p>
       <Button
         variant="ghost"
