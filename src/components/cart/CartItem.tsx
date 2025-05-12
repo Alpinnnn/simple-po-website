@@ -1,3 +1,4 @@
+// src/components/cart/CartItem.tsx
 "use client";
 
 import type { CartItem as CartItemType } from '@/types';
@@ -6,20 +7,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { Trash2, Plus, Minus, Package } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { JSX } from 'react'; // Added for explicit JSX.Element type, though often global
 
 interface CartItemProps {
   item: CartItemType;
 }
 
-export default function CartItem({ item }: CartItemProps) {
+export default function CartItem({ item }: CartItemProps): JSX.Element {
   const { updateQuantity, removeFromCart } = useCart();
 
   const handleQuantityChange = (newQuantity: number) => {
-    updateQuantity(item.product.id, newQuantity);
+    // Ensure quantity is at least 1, or use updateQuantity logic which might allow 0 to remove
+    const quantityToUpdate = Math.max(1, newQuantity);
+    updateQuantity(item.product.id, quantityToUpdate);
   };
 
   return (
-    <div className="flex items-center space-x-4 p-4 border-b border-border bg-card rounded-lg shadow-sm mb-4">
+    <div className="flex items-center space-x-4 p-4 border-b last:border-b-0 border-border bg-card rounded-lg shadow-sm">
       {item.product.imageUrl ? (
         <Image
           src={item.product.imageUrl}
@@ -40,7 +45,7 @@ export default function CartItem({ item }: CartItemProps) {
           ${item.product.price.toFixed(2)} each
         </p>
          {item.product.storeName && (
-          <p className="text-xs text-accent">From: {item.product.storeName}</p>
+          <p className="text-xs text-accent-foreground">From: {item.product.storeName}</p>
         )}
       </div>
       <div className="flex items-center space-x-2">
@@ -56,7 +61,10 @@ export default function CartItem({ item }: CartItemProps) {
         <Input
           type="number"
           value={item.quantity}
-          onChange={(e) => handleQuantityChange(parseInt(e.target.value, 10))}
+          onChange={(e) => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val)) handleQuantityChange(val);
+          }}
           className="w-16 text-center h-9"
           min="1"
           aria-label="Item quantity"
@@ -77,7 +85,7 @@ export default function CartItem({ item }: CartItemProps) {
         variant="ghost"
         size="icon"
         onClick={() => removeFromCart(item.product.id)}
-        className="text-destructive hover:bg-destructive/10"
+        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
         aria-label="Remove item from cart"
       >
         <Trash2 className="h-5 w-5" />

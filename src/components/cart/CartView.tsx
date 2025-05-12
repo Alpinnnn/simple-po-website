@@ -1,18 +1,25 @@
+// src/components/cart/CartView.tsx
 "use client";
 
+import type { CartItem as CartItemType } from '@/types'; // Ensure this import is present
 import { useCart } from '@/contexts/CartContext';
 import CartItem from './CartItem';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
-export default function CartView() {
+interface CartViewProps {
+  isModal?: boolean;
+}
+
+export default function CartView({ isModal = false }: CartViewProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
 
   if (cartItems.length === 0) {
     return (
-      <div className="text-center py-10">
+      <div className={cn("text-center", isModal ? "py-6" : "py-10")}>
         <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground mb-4" />
         <h2 className="text-2xl font-semibold mb-2 text-foreground">Your cart is empty</h2>
         <p className="text-muted-foreground mb-6">Looks like you haven't added anything to your cart yet.</p>
@@ -23,6 +30,25 @@ export default function CartView() {
     );
   }
 
+  // Modal rendering: simpler list, no Card wrapper, no total/footer (handled by CartModal)
+  if (isModal) {
+    return (
+      <div className="space-y-4">
+        {cartItems.map((item) => (
+          <CartItem key={item.product.id} item={item} />
+        ))}
+        {cartItems.length > 0 && (
+          <div className="flex justify-end pt-4">
+             <Button variant="outline" onClick={clearCart} className="border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive">
+              Clear Cart
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Original rendering for a page context (fallback, though not used anymore)
   return (
     <Card className="shadow-xl">
       <CardHeader>
@@ -36,7 +62,7 @@ export default function CartView() {
         </div>
       </CardContent>
       <CardFooter className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-muted/50 rounded-b-lg">
-        <Button variant="outline" onClick={clearCart} className="w-full sm:w-auto">
+        <Button variant="outline" onClick={clearCart} className="w-full sm:w-auto border-destructive text-destructive hover:bg-destructive/10 hover:text-destructive">
           Clear Cart
         </Button>
         <div className="text-right">
