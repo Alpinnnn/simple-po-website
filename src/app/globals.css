@@ -4,88 +4,91 @@
 
 @layer base {
   :root {
-    --background: 100 60% 90%; /* #e1f7d7 - Soft green */
-    --foreground: 210 25% 25%; /* Darker neutral for text */
+    --background: 220 20% 10%; /* Very Dark Desaturated Blue */
+    --foreground: 210 15% 88%; /* Light Grayish Blue */
 
-    --card: 205 67% 89%; /* #d1eaf5 - Pale blue (content areas like cards) */
-    --card-foreground: 210 25% 25%;
+    --card: 220 20% 15%; /* Slightly Lighter VDD Blue for cards */
+    --card-foreground: 210 15% 85%;
 
-    --popover: 205 67% 92%; /* Lighter pale blue for popovers */
-    --popover-foreground: 210 25% 25%;
+    --popover: 220 20% 12%; /* Darker than card for popovers */
+    --popover-foreground: 210 15% 88%;
 
-    --primary: 353 100% 92%; /* #ffd6da - Light red (buttons) */
-    --primary-foreground: 353 70% 35%; /* Darker red for text on primary buttons */
+    --primary: 205 70% 55%; /* Confident Blue */
+    --primary-foreground: 210 20% 98%; /* Almost White for text on primary */
 
-    --secondary: 216 69% 86%; /* #c3d6f2 - Light blue (header, secondary elements) */
-    --secondary-foreground: 216 40% 30%; /* Darker blue for text on secondary */
+    --secondary: 220 15% 25%; /* Muted Dark Blue */
+    --secondary-foreground: 210 15% 75%; /* Muted Light Grayish Blue */
 
-    --muted: 350 100% 93%; /* Lighter variant of #ffc6d0 - Muted rose */
-    --muted-foreground: 350 50% 50%; /* Muted text on muted background */
+    --muted: 220 15% 20%; /* Muted VDD Blue */
+    --muted-foreground: 210 15% 60%; /* Darker Muted Gray */
 
-    --accent: 350 100% 89%; /* #ffc6d0 - Muted rose (actual accent color) */
-    --accent-foreground: 350 70% 30%; /* Text for accent elements */
+    --accent: 175 60% 40%;  /* Professional Teal */
+    --accent-foreground: 175 20% 95%; /* Very Light Cyan for text on accent */
 
-    --destructive: 353 90% 80%; /* A more saturated/darker version of light red for destructive actions */
-    --destructive-foreground: 0 0% 100%; /* White text for destructive buttons */
+    --destructive: 0 60% 50%; /* Professional, slightly muted Red */
+    --destructive-foreground: 0 0% 98%; /* White */
 
-    --border: 210 30% 75%; /* A soft border color */
-    --input: 210 50% 96%; /* Very light blue/gray for input backgrounds */
-    --ring: 353 100% 92%; /* #ffd6da - Light red for focus rings */
+    --border: 220 15% 28%; /* Subtle Dark Blue-Gray Border */
+    --input: 220 15% 18%; /* Dark Input Background */
+    --ring: 205 70% 65%; /* Slightly lighter primary for focus rings */
 
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    /* Sidebar colors using the main theme variables */
-    --sidebar-background: hsl(var(--secondary)); /* Light blue */
-    --sidebar-foreground: hsl(var(--secondary-foreground));
-    --sidebar-primary: hsl(var(--primary)); /* Light red */
-    --sidebar-primary-foreground: hsl(var(--primary-foreground));
-    --sidebar-accent: hsl(var(--accent)); /* Muted rose */
-    --sidebar-accent-foreground: hsl(var(--accent-foreground));
-    --sidebar-border: hsl(var(--border));
-    --sidebar-ring: hsl(var(--ring));
-  }
-
-  .dark {
-    /* Keeping dark mode similar for now, can be adjusted if needed */
-    --background: 210 25% 15%;
-    --foreground: 210 25% 90%;
-
-    --card: 210 25% 20%;
-    --card-foreground: 210 25% 90%;
-
-    --popover: 210 25% 18%;
-    --popover-foreground: 210 25% 90%;
-
-    --primary: 353 80% 70%;
-    --primary-foreground: 353 70% 20%;
-
-    --secondary: 216 50% 60%;
-    --secondary-foreground: 216 40% 20%;
-
-    --muted: 350 60% 65%;
-    --muted-foreground: 350 50% 30%;
-
-    --accent: 350 80% 70%;
-    --accent-foreground: 350 70% 20%;
-
-    --destructive: 353 70% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 210 25% 30%;
-    --input: 210 25% 25%;
-    --ring: 353 80% 70%;
-
+    /* Dark theme charts */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
+    /* Sidebar colors using the main theme variables */
+    --sidebar-background: hsl(var(--secondary));
+    --sidebar-foreground: hsl(var(--secondary-foreground));
+    --sidebar-primary: hsl(var(--primary));
+    --sidebar-primary-foreground: hsl(var(--primary-foreground));
+    --sidebar-accent: hsl(var(--accent));
+    --sidebar-accent-foreground: hsl(var(--accent-foreground));
+    --sidebar-border: hsl(var(--border));
+    --sidebar-ring: hsl(var(--ring));
+  }
+
+  .dark { /* Light Professional Theme */
+    --background: 210 30% 98%; /* Very Light Cool Gray / Almost White */
+    --foreground: 220 20% 15%; /* Dark Desaturated Blue for text */
+
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 220 20% 15%;
+
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 220 20% 15%;
+
+    --primary: 205 65% 50%; /* Confident Blue */
+    --primary-foreground: 0 0% 98%; /* White */
+
+    --secondary: 210 30% 92%; /* Light Cool Gray */
+    --secondary-foreground: 205 60% 35%; /* Darker Blue for text on light secondary */
+
+    --muted: 210 30% 88%;
+    --muted-foreground: 210 25% 50%;
+
+    --accent: 175 55% 45%; /* Teal */
+    --accent-foreground: 0 0% 98%; /* White */
+
+    --destructive: 0 70% 55%; /* Professional Red */
+    --destructive-foreground: 0 0% 98%; /* White */
+
+    --border: 210 25% 80%;
+    --input: 210 25% 94%; /* Very Light Input Bg */
+    --ring: 205 65% 55%;
+
+    /* Light theme charts */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Sidebar colors for light theme */
     --sidebar-background: hsl(var(--secondary));
     --sidebar-foreground: hsl(var(--secondary-foreground));
     --sidebar-primary: hsl(var(--primary));
