@@ -195,8 +195,8 @@ export default async function ManageFoodPage({ searchParams }: Props) {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-3 py-1.5 inline-flex text-xs leading-5 font-medium rounded-full ${
                           food.is_available 
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' 
-                            : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300'
+                            ? 'bg-accent-light dark:bg-accent text-accent-dark dark:text-accent-dark' 
+                            : 'bg-danger-light dark:bg-danger text-danger-dark dark:text-danger-dark'
                         }`}>
                           {food.is_available ? 'Tersedia' : 'Tidak Tersedia'}
                         </span>

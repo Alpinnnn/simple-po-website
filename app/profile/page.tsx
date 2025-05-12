@@ -185,8 +185,8 @@ export default function ProfilePage() {
         {message.text && (
           <div className={`mb-4 p-3 rounded ${
             message.type === 'error' 
-              ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' 
-              : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+              ? 'bg-danger-light text-danger-dark dark:bg-danger dark:text-danger-light' 
+              : 'bg-accent-light text-accent-dark dark:bg-accent dark:text-accent-light'
           }`}>
             {message.text}
           </div>
@@ -206,7 +206,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={handleRemoveAvatar}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                    className="absolute -top-2 -right-2 bg-danger text-white rounded-full p-1 hover:bg-danger-dark transition-colors"
                     title="Hapus foto profil"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

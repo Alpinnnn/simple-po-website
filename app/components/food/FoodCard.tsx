@@ -38,7 +38,7 @@ export default function FoodCard({
         
         {!isAvailable && (
           <div className="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-[2px]">
-            <span className="text-white font-medium px-4 py-1.5 bg-red-500/90 rounded-full text-sm shadow-lg">
+            <span className="text-white font-medium px-4 py-1.5 bg-danger/90 rounded-full text-sm shadow-lg">
               Tidak Tersedia
             </span>
           </div>
@@ -46,11 +46,11 @@ export default function FoodCard({
         
         <div className="absolute top-0 left-0 right-0 p-3 flex justify-between items-center">
           {isAvailable && (
-            <div className="bg-green-500/90 text-white backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium shadow-md">
+            <div className="bg-accent/90 text-accent-dark backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium shadow-md">
               Tersedia
             </div>
           )}
-          <div className="ml-auto bg-white/90 dark:bg-gray-800/90 rounded-full px-3 py-2 text-sm font-bold shadow-md text-blue-600 dark:text-blue-400 backdrop-blur-sm">
+          <div className="ml-auto bg-white/90 dark:bg-gray-800/90 rounded-full px-3 py-2 text-sm font-bold shadow-md text-primary-dark dark:text-primary backdrop-blur-sm">
             Rp {formattedPrice}
           </div>
         </div>

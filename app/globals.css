@@ -1,7 +1,89 @@
-@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Color System */
+:root {
+  /* Main Colors */
+  --primary: #c3d6f2; /* Light blue */
+  --primary-light: #d6e3f7;
+  --primary-dark: #a7c0e8;
+  
+  --secondary: #d1eaf5; /* Pale blue */
+  --secondary-light: #e0f2fa;
+  --secondary-dark: #b8e0ef;
+  
+  --accent: #e1f7d7; /* Light green */
+  --accent-light: #ebfae5;
+  --accent-dark: #caf0b6;
+  
+  --highlight: #ffd6da; /* Light pink */
+  --highlight-light: #ffe5e8;
+  --highlight-dark: #ffc0c7;
+  
+  --danger: #ffc6d0; /* Darker pink */
+  --danger-light: #ffd9df;
+  --danger-dark: #ffadb9;
+  
+  /* System Colors */
+  --success: var(--accent);
+  --error: var(--danger);
+  --warning: var(--highlight);
+  --info: var(--secondary);
+  
+  /* Background and Text */
+  --background: #ffffff;
+  --foreground: #1e293b;
+  
+  /* Grays */
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #c3d6f2;
+    --primary-light: #d6e3f7;
+    --primary-dark: #a7c0e8;
+    
+    --secondary: #d1eaf5;
+    --secondary-light: #e0f2fa;
+    --secondary-dark: #b8e0ef;
+    
+    --accent: #e1f7d7;
+    --accent-light: #ebfae5;
+    --accent-dark: #caf0b6;
+    
+    --highlight: #ffd6da;
+    --highlight-light: #ffe5e8;
+    --highlight-dark: #ffc0c7;
+    
+    --danger: #ffc6d0;
+    --danger-light: #ffd9df;
+    --danger-dark: #ffadb9;
+    
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    
+    --gray-50: #1e293b;
+    --gray-100: #1e293b;
+    --gray-200: #334155;
+    --gray-300: #475569;
+    --gray-400: #64748b;
+    --gray-500: #94a3b8;
+    --gray-600: #cbd5e1;
+    --gray-700: #e2e8f0;
+    --gray-800: #f1f5f9;
+  }
+}
 
 /* Lenis scroll styles */
 html.lenis {
@@ -24,50 +106,6 @@ html.lenis {
   pointer-events: none;
 }
 
-:root {
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --background: #ffffff;
-  --foreground: #1e293b;
-  --gray-50: #f8fafc;
-  --gray-100: #f1f5f9;
-  --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
-  --gray-400: #94a3b8;
-  --gray-500: #64748b;
-  --gray-600: #475569;
-  --gray-700: #334155;
-  --gray-800: #1e293b;
-  --accent: #f97316;
-  --error: #ef4444;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --info: #3b82f6;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primary: #60a5fa;
-    --primary-hover: #93c5fd;
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --gray-50: #1e293b;
-    --gray-100: #1e293b;
-    --gray-200: #334155;
-    --gray-300: #475569;
-    --gray-400: #64748b;
-    --gray-500: #94a3b8;
-    --gray-600: #cbd5e1;
-    --gray-700: #e2e8f0;
-    --gray-800: #f1f5f9;
-    --accent: #fb923c;
-    --error: #f87171;
-    --success: #34d399;
-    --warning: #fbbf24;
-    --info: #60a5fa;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -76,11 +114,11 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-500 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors shadow-sm;
+    @apply bg-primary text-gray-800 px-5 py-2 rounded-md text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-5 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors shadow-sm;
+    @apply bg-secondary text-gray-800 px-5 py-2 rounded-md text-sm font-medium hover:bg-secondary-dark transition-colors shadow-sm;
   }
 
   .container-custom {

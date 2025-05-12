@@ -22,13 +22,13 @@ export default async function Home() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <a 
                   href="#kantin" 
-                  className="btn-primary bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 dark:from-blue-600 dark:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 rounded-lg px-6 py-3.5 text-white shadow-md hover:shadow-lg transition-all text-lg"
+                  className="btn-primary bg-gradient-to-r from-primary to-primary-dark hover:from-primary-dark hover:to-primary dark:from-primary dark:to-primary-dark dark:hover:from-primary dark:hover:to-primary-dark rounded-lg px-6 py-3.5 text-gray-800 shadow-md hover:shadow-lg transition-all text-lg"
                 >
                   Lihat Kantin
                 </a>
                 <a 
                   href="/about" 
-                  className="btn-secondary border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg px-6 py-3.5 transition-all text-lg"
+                  className="btn-secondary border border-secondary-dark dark:border-secondary hover:bg-secondary-light dark:hover:bg-secondary-dark rounded-lg px-6 py-3.5 transition-all text-lg"
                 >
                   Tentang Kami
                 </a>
@@ -46,8 +46,8 @@ export default async function Home() {
                 />
                 <div className="absolute -bottom-5 -right-5 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-10 h-10 bg-accent dark:bg-accent rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent-dark dark:text-accent-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -130,8 +130,8 @@ export default async function Home() {
             </div>
             
             <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
-              <div className="bg-orange-100 dark:bg-orange-900/50 p-3 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="bg-accent-light dark:bg-accent p-3 rounded-xl w-16 h-16 flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-accent-dark dark:text-accent-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
