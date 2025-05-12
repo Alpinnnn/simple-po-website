@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { Trash2, Plus, Minus, Package } from 'lucide-react';
 import type { JSX } from 'react'; 
-import { formatCurrency, formatSimpleCurrency } from '@/lib/currency';
+import { formatCurrency, formatSimpleCurrency } from '@/lib';
 
 interface CartItemProps {
   item: CartItemType; // This item.product is now FoodProduct

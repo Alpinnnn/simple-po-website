@@ -15,7 +15,7 @@ import CheckoutForm from '@/components/cart/CheckoutForm';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { formatCurrency } from '@/lib/currency';
+import { formatCurrency } from '@/lib';
 
 interface CartModalProps {
   isOpen: boolean;

@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
-import { formatCurrency, formatSimpleCurrency, CurrencySettings } from '@/lib/currency';
+import { formatCurrency, formatSimpleCurrency, CurrencySettings } from '@/lib';
 
 const checkoutSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),

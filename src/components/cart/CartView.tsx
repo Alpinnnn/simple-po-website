@@ -9,7 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { formatCurrency } from '@/lib/currency';
+import { formatCurrency } from '@/lib';
 
 interface CartViewProps {
   isModal?: boolean;

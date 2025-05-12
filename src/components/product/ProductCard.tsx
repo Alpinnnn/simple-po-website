@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCart } from '@/contexts/CartContext';
 import { ShoppingCart, Tag, Package, Store } from 'lucide-react'; // Menambahkan ikon Store
-import { formatCurrency } from '@/lib/currency';
+import { formatCurrency } from '@/lib';
 
 // Mendefinisikan ProductWithCanteen
 interface ProductWithCanteen extends Omit<FoodProduct, 'canteen_id'> {
