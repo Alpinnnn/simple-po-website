@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Add your Supabase project URL's hostname here
+      // Example: xyzabc.supabase.co (replace xyzabc with your project reference)
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co', // Generic pattern for Supabase storage
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

@@ -1,10 +1,26 @@
-import { mockProducts } from '@/data/mock';
 import ProductCard from './ProductCard';
-import type { Product } from '@/types';
+import type { FoodProduct } from '@/types';
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from '@/types/supabase';
 
-async function getProducts(): Promise<Product[]> {
-  // In a real app, this would fetch data from an API
-  return Promise.resolve(mockProducts);
+async function getProducts(): Promise<FoodProduct[]> {
+  const supabase = createBrowserClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const { data, error } = await supabase
+    .from('foods')
+    .select('*')
+    .eq('is_available', true); // Optionally, only fetch available products
+
+  if (error) {
+    console.error('Error fetching products:', error);
+    return [];
+  }
+  // Map Supabase data to FoodProduct type if necessary.
+  // Ensure your FoodProduct type in src/types/index.ts matches the 'foods' table structure.
+  return data as FoodProduct[];
 }
 
 export default async function ProductList() {

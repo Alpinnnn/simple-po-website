@@ -4,86 +4,93 @@
 
 @layer base {
   :root {
-    /* OrderEase Palette - Light Theme */
-    --background: 100 60% 93%; /* Soft Green (#e1f7d7) */
-    --foreground: 220 25% 10%; /* Very Dark Desaturated Blue (for text on soft green) */
+    /* Dark Professional Theme for Food/Beverage Pre-order */
+    --background: 220 15% 15%; /* Very Dark Blue */
+    --foreground: 220 10% 85%; /* Light Grey-Blue */
 
-    --card: 200 40% 85%; /* Pale Blue (#d1eaf5) - Content Areas */
-    --card-foreground: 220 25% 15%; /* Dark Desaturated Blue (for text on pale blue) */
+    --card: 220 15% 20%; /* Dark Blue, slightly lighter */
+    --card-foreground: 220 10% 85%; /* Light Grey-Blue */
 
-    --popover: 200 40% 80%; /* Slightly darker Pale Blue for popovers */
-    --popover-foreground: 220 25% 15%; /* Dark Desaturated Blue */
+    --popover: 220 15% 12%; /* Even Darker Blue for popovers */
+    --popover-foreground: 220 10% 85%; /* Light Grey-Blue */
 
-    --primary: 200 70% 77%; /* Light Blue (#c3d6f2) - Header */
-    --primary-foreground: 220 25% 15%; /* Dark Desaturated Blue (for text on light blue header) */
+    --primary: 30 80% 55%; /* Warm Orange */
+    --primary-foreground: 20 30% 98%; /* Very Light, almost white */
 
-    /* Secondary color is used for content areas, so map it to card's bg */
-    --secondary: 200 40% 85%; /* Pale Blue (#d1eaf5) */
-    --secondary-foreground: 220 25% 15%; /* Dark Desaturated Blue */
+    --secondary: 220 15% 25%; /* Another shade of Dark Blue */
+    --secondary-foreground: 220 10% 75%; /* Muted Light Grey-Blue */
 
-    --muted: 200 40% 90%; /* Lighter Pale Blue */
-    --muted-foreground: 220 20% 30%; /* Muted Dark Blue */
+    --muted: 220 10% 30%; /* Dark Grey for muted elements */
+    --muted-foreground: 220 10% 60%; /* Lighter Grey for muted text */
 
-    /* Highlight color (Light Red) for buttons and interactive elements - map to destructive for buttons */
-    --destructive: 0 100% 85%; /* Light Red (#ffd6da) */
-    --destructive-foreground: 0 100% 15%; /* Dark Red (for text on light red buttons) */
+    --accent: 170 60% 45%; /* Muted Teal */
+    --accent-foreground: 200 100% 95%; /* Light Teal/White */
+
+    --destructive: 0 70% 50%;  /* Saturated Red */
+    --destructive-foreground: 0 0% 98%; /* White */
     
-    /* Accent (Muted Rose) for subtle visual accents */
-    --accent: 340 70% 80%; /* Muted Rose (#ffc6d0) */
-    --accent-foreground: 340 100% 10%; /* Dark Rose (for text on muted rose) */
-
-    --border: 200 30% 70%; /* Muted light blue-gray border */
-    --input: 0 0% 100%; /* White input background for contrast on soft green (Note: ShadCN Inputs use --background for bg by default) */
-    --input-border: 200 30% 65%; /* Border for input, slightly darker than main border */
-    --ring: 200 70% 65%; /* Slightly darker Light Blue for focus rings */
+    --border: 220 15% 28%; /* Medium Dark Blue/Grey for borders */
+    --input: 220 15% 22%; /* Darker background for inputs */
+    --input-border: 220 15% 35%; /* Specific border for inputs */
+    --ring: 30 80% 65%; /* Brighter Warm Orange for focus rings */
 
     --radius: 0.5rem;
 
-    /* Chart colors - can be adjusted to fit the theme */
-    --chart-1: hsl(var(--primary));
-    --chart-2: hsl(var(--accent));
-    --chart-3: 210 60% 60%; /* A complementary blue */
-    --chart-4: 30 80% 70%; /* A warm color */
-    --chart-5: 150 50% 60%; /* A cooler green/teal */
+    /* Chart colors - ensure they contrast well with the dark theme */
+    --chart-1: hsl(var(--primary)); /* Warm Orange */
+    --chart-2: hsl(var(--accent)); /* Muted Teal */
+    --chart-3: 190 70% 50%; /* A contrasting Cyan/Blue */
+    --chart-4: 50 80% 60%; /* A bright Yellow/Gold */
+    --chart-5: 300 60% 60%; /* A contrasting Purple/Magenta */
+
+    /* Sidebar specific colors */
+    --sidebar-background: 220 15% 18%; /* Slightly different dark shade for sidebar */
+    --sidebar-foreground: 220 10% 80%; /* Sidebar text */
+    --sidebar-primary: hsl(var(--primary));
+    --sidebar-primary-foreground: hsl(var(--primary-foreground));
+    --sidebar-accent: hsl(var(--accent));
+    --sidebar-accent-foreground: hsl(var(--accent-foreground));
+    --sidebar-border: 220 15% 25%;
+    --sidebar-ring: hsl(var(--ring));
   }
 
+  /* .dark class can be identical if the default is already dark, or provide an alternative if needed */
   .dark {
-    /* Dark Theme - Inverted and adjusted for professionalism */
-    --background: 220 20% 12%; /* Very Dark Desaturated Blue */
-    --foreground: 200 30% 88%; /* Light Grayish Blue/Pale Greenish tint */
-
-    --card: 220 20% 18%; /* Slightly Lighter VDD Blue for cards */
-    --card-foreground: 200 30% 85%;
-
-    --popover: 220 20% 15%; /* Darker than card for popovers */
-    --popover-foreground: 200 30% 88%;
-
-    --primary: 200 60% 55%; /* Desaturated, darker Light Blue */
-    --primary-foreground: 220 20% 95%; /* Almost White for text on primary */
-
-    --secondary: 220 15% 25%; /* Muted Dark Blue */
-    --secondary-foreground: 200 25% 75%; /* Muted Light Grayish Blue/Pale Greenish */
-
-    --muted: 220 15% 20%; /* Muted VDD Blue */
-    --muted-foreground: 200 20% 60%; /* Darker Muted Gray/Greenish */
-
-    --destructive: 0 70% 50%;  /* Saturated Red for dark theme */
-    --destructive-foreground: 0 0% 98%; /* White */
-    
-    --accent: 340 50% 60%; /* Desaturated, darker Muted Rose */
-    --accent-foreground: 340 20% 95%; /* Very Light Rose/Pink */
-
-    --border: 220 15% 30%; /* Subtle Dark Blue-Gray Border */
-    --input: 220 15% 22%; /* Dark Input Background (Note: ShadCN Inputs use --background for bg by default) */
+    --background: 220 15% 15%;
+    --foreground: 220 10% 85%;
+    --card: 220 15% 20%;
+    --card-foreground: 220 10% 85%;
+    --popover: 220 15% 12%;
+    --popover-foreground: 220 10% 85%;
+    --primary: 30 80% 55%;
+    --primary-foreground: 20 30% 98%;
+    --secondary: 220 15% 25%;
+    --secondary-foreground: 220 10% 75%;
+    --muted: 220 10% 30%;
+    --muted-foreground: 220 10% 60%;
+    --accent: 170 60% 45%;
+    --accent-foreground: 200 100% 95%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 15% 28%;
+    --input: 220 15% 22%;
     --input-border: 220 15% 35%;
-    --ring: 200 60% 65%; /* Slightly lighter primary for focus rings */
+    --ring: 30 80% 65%;
 
-    /* Chart colors for dark theme */
     --chart-1: hsl(var(--primary));
     --chart-2: hsl(var(--accent));
-    --chart-3: 210 50% 50%;
-    --chart-4: 30 70% 60%;
-    --chart-5: 150 40% 50%;
+    --chart-3: 190 70% 50%;
+    --chart-4: 50 80% 60%;
+    --chart-5: 300 60% 60%;
+
+    --sidebar-background: 220 15% 18%;
+    --sidebar-foreground: 220 10% 80%;
+    --sidebar-primary: hsl(var(--primary));
+    --sidebar-primary-foreground: hsl(var(--primary-foreground));
+    --sidebar-accent: hsl(var(--accent));
+    --sidebar-accent-foreground: hsl(var(--accent-foreground));
+    --sidebar-border: 220 15% 25%;
+    --sidebar-ring: hsl(var(--ring));
   }
 }
 
@@ -95,20 +102,12 @@
     @apply bg-background text-foreground;
     font-family: var(--font-geist-sans);
   }
-  /* Update input default styles to be more consistent with ShadCN components */
   input,
   textarea,
   select {
-    @apply rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background;
+    @apply rounded-md border border-input bg-input px-3 py-2 text-base ring-offset-background; /* Changed bg-background to bg-input */
     @apply placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
     @apply md:text-sm;
-     /* Apply text color from foreground */
     @apply text-foreground;
   }
 }
-
-/* Apply primary color to header in layout.tsx if not already */
-/* Apply secondary/card color to content areas like product listings */
-/* Apply background color to main body */
-/* Apply highlight color (destructive) to Add to Cart buttons, submit buttons */
-/* Apply accent color for subtle accents like tags or secondary info */

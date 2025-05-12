@@ -1,33 +1,31 @@
 // src/components/cart/CartItem.tsx
 "use client";
 
-import type { CartItem as CartItemType } from '@/types';
+import type { CartItem as CartItemType } from '@/types'; // CartItem now internally uses FoodProduct
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { Trash2, Plus, Minus, Package } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { JSX } from 'react'; // Added for explicit JSX.Element type, though often global
+import type { JSX } from 'react'; 
 
 interface CartItemProps {
-  item: CartItemType;
+  item: CartItemType; // This item.product is now FoodProduct
 }
 
 export default function CartItem({ item }: CartItemProps): JSX.Element {
   const { updateQuantity, removeFromCart } = useCart();
 
   const handleQuantityChange = (newQuantity: number) => {
-    // Ensure quantity is at least 1, or use updateQuantity logic which might allow 0 to remove
     const quantityToUpdate = Math.max(1, newQuantity);
     updateQuantity(item.product.id, quantityToUpdate);
   };
 
   return (
-    <div className="flex items-center space-x-4 p-4 border-b last:border-b-0 border-border bg-card rounded-lg shadow-sm">
-      {item.product.imageUrl ? (
+    <div className="flex items-center space-x-4 p-4 border-b last:border-b-0 border-border bg-card rounded-lg shadow-sm text-card-foreground">
+      {item.product.image_url ? ( // Changed from imageUrl to image_url
         <Image
-          src={item.product.imageUrl}
+          src={item.product.image_url}
           alt={item.product.name}
           width={80}
           height={80}
@@ -44,9 +42,9 @@ export default function CartItem({ item }: CartItemProps): JSX.Element {
         <p className="text-sm text-muted-foreground">
           ${item.product.price.toFixed(2)} each
         </p>
-         {item.product.storeName && (
-          <p className="text-xs text-accent-foreground">From: {item.product.storeName}</p>
-        )}
+         {/* item.product.storeName is removed as FoodProduct doesn't have it.
+             If you need Canteen Name, it would require different data structure or fetching.
+         */}
       </div>
       <div className="flex items-center space-x-2">
         <Button
@@ -65,7 +63,7 @@ export default function CartItem({ item }: CartItemProps): JSX.Element {
             const val = parseInt(e.target.value, 10);
             if (!isNaN(val)) handleQuantityChange(val);
           }}
-          className="w-16 text-center h-9"
+          className="w-16 text-center h-9 bg-input text-foreground" // Ensure input also uses theme colors
           min="1"
           aria-label="Item quantity"
         />
