@@ -13,6 +13,8 @@ Aplikasi pre-order modern berbasis web dengan integrasi WhatsApp untuk restoran,
 - ✅ Mata uang yang dapat dikonfigurasi (IDR, USD, dll)
 - ✅ Tampilan admin untuk pengelolaan produk (coming soon)
 - ✅ OpenGraph metadata untuk berbagi di media sosial
+- ✅ Smooth scrolling dengan Lenis
+- ✅ Animasi scroll dengan GSAP
 
 ## Teknologi yang Digunakan
 
@@ -23,6 +25,8 @@ Aplikasi pre-order modern berbasis web dengan integrasi WhatsApp untuk restoran,
 - **React Hook Form & Zod** - Untuk validasi form
 - **Radix UI** - Komponen accessible UI
 - **Lucide Icons** - Untuk ikon-ikon aplikasi
+- **GSAP** - Untuk animasi menarik pada saat scrolling
+- **Lenis** - Untuk smooth scrolling yang halus
 
 ## Cara Instalasi
 
@@ -51,10 +55,14 @@ pnpm install
 
 3. Konfigurasi environment variables (opsional)
 
-Buat file `.env.local` di root project dan tambahkan variabel berikut:
+Buat file `.env` di root project dan tambahkan variabel berikut:
 
 ```
-# Nomor WhatsApp Admin (opsional, dengan default +628588816751)
+# Konfigurasi Supabase
+NEXT_PUBLIC_SUPABASE_URL=""
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+
+# Nomor WhatsApp Admin
 NEXT_PUBLIC_ADMIN_WHATSAPP="+62812345678"
 
 # Konfigurasi Mata Uang (opsional, dengan default USD)
@@ -129,6 +137,51 @@ export const metadata: Metadata = {
 ```
 
 Gambar OpenGraph dihasilkan secara dinamis dari file `src/app/opengraph-image.tsx` dan `src/app/twitter-image.tsx`.
+
+### Konfigurasi Animasi
+
+Aplikasi menggunakan GSAP dan Lenis untuk memberikan pengalaman scrolling yang halus dan animasi yang menarik.
+
+#### Smooth Scrolling dengan Lenis
+
+Smooth scrolling diimplementasikan menggunakan library Lenis di `src/providers/SmoothScrollProvider.tsx`. Konfigurasi Lenis dapat disesuaikan:
+
+```typescript
+const lenisInstance = new Lenis({
+  duration: 1.2, // Durasi animasi (dapat disesuaikan)
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  wheelMultiplier: 1, // Multiplier kecepatan scroll (angka lebih tinggi = scroll lebih cepat)
+});
+```
+
+#### Animasi dengan GSAP
+
+Produk-produk dalam aplikasi dianimasikan saat muncul di viewport menggunakan GSAP ScrollTrigger. Animasi dapat disesuaikan di `src/providers/SmoothScrollProvider.tsx`:
+
+```typescript
+gsap.fromTo(
+  card,
+  {
+    opacity: 0,
+    y: 50, // Mulai 50px di bawah posisi akhir
+  },
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.8, // Durasi animasi
+    delay: i * 0.1, // Delay bertahap untuk setiap card
+    ease: 'power3.out', // Efek easing
+    scrollTrigger: {
+      trigger: card,
+      start: 'top bottom-=100', // Mulai animasi saat elemen 100px dari bawah viewport
+      end: 'bottom top',
+      toggleActions: 'play none none reverse', // Membalik animasi saat scroll naik
+    },
+  }
+);
+```
+
+Untuk menonaktifkan animasi, Anda dapat menghapus inisialisasi GSAP di file `SmoothScrollProvider.tsx`.
 
 ## Penggunaan
 

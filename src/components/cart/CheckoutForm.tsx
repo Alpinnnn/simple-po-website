@@ -31,7 +31,7 @@ interface CheckoutFormProps {
 
 // Nomor WhatsApp admin untuk dikirimkan pre-order
 // Menggunakan environment variable dengan fallback ke nomor default jika tidak tersedia
-const ADMIN_WHATSAPP = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || "+628588816751";
+const ADMIN_WHATSAPP = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP;
 
 export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: CheckoutFormProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
