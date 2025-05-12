@@ -12,7 +12,7 @@ export default function HeroSection() {
             Pre-Order Your Favorites, Effortlessly.
           </h1>
           <p className="text-lg sm:text-xl text-card-foreground leading-relaxed">
-            Discover exclusive items from local stores and secure your pre-orders with OrderEase. Simple, fast, and convenient.
+            Website Pre-Order Simple dan Mudah Untuk Tugas PKK Kami.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow">

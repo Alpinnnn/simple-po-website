@@ -25,7 +25,7 @@ export default function Header() {
               <Package className="h-8 w-8 text-primary-foreground group-hover:animate-pulse" />
               {/* Text color is inherited primary-foreground, which is good. */}
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                OrderEase
+                PKK-ku
               </h1>
             </Link>
             <Button

@@ -29,7 +29,7 @@ interface CheckoutFormProps {
 }
 
 // Nomor WhatsApp admin untuk dikirimkan pre-order
-const ADMIN_WHATSAPP = "+628588816751";
+const ADMIN_WHATSAPP = "+6285156313792";
 
 export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: CheckoutFormProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
