@@ -28,6 +28,9 @@ interface CheckoutFormProps {
   isModal?: boolean;
 }
 
+// Nomor WhatsApp admin untuk dikirimkan pre-order
+const ADMIN_WHATSAPP = "+628588816751";
+
 export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: CheckoutFormProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { toast } = useToast();
@@ -42,6 +45,26 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
     resolver: zodResolver(checkoutSchema),
   });
 
+  // Fungsi untuk format pesan WhatsApp
+  const formatWhatsAppMessage = (formData: CheckoutFormValues) => {
+    const items = cartItems.map(item => 
+      `- ${item.product.name} (${item.quantity}x) @ $${item.product.price} = $${(item.quantity * item.product.price).toFixed(2)}`
+    ).join('\n');
+
+    const total = getCartTotal().toFixed(2);
+
+    return encodeURIComponent(
+      `*PRE-ORDER BARU*\n\n` +
+      `*Detail Pelanggan:*\n` +
+      `Nama: ${formData.name}\n` +
+      `No. Telp: ${formData.phone}\n` +
+      `Alamat: ${formData.address}\n` +
+      `${formData.notes ? `Catatan: ${formData.notes}\n` : ''}` +
+      `\n*Detail Pesanan:*\n${items}\n\n` +
+      `*Total: $${total}*`
+    );
+  };
+
   const onSubmit: SubmitHandler<CheckoutFormValues> = async (data) => {
     if (cartItems.length === 0) {
       toast({
@@ -52,26 +75,36 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
       return;
     }
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    console.log("Pre-Order Submitted:");
-    console.log("Contact Details:", data);
-    console.log("Order Items:", cartItems.map(item => ({ name: item.product.name, quantity: item.quantity, price: item.product.price })));
-    console.log("Total Amount:", getCartTotal().toFixed(2));
-
-    toast({
-      title: "Pre-Order Submitted!",
-      description: "Thank you! We've received your pre-order and will contact you shortly.",
-      variant: "default", // 'default' variant often is green or blue for success
-      duration: 5000,
-    });
     
-    clearCart();
-    reset();
-    setIsSubmitting(false);
-    if (onCheckoutSuccess) {
-      onCheckoutSuccess();
+    try {
+      // Format pesan WhatsApp
+      const whatsappMessage = formatWhatsAppMessage(data);
+      
+      // Buka jendela WhatsApp dengan pesan yang telah diformat
+      window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${whatsappMessage}`, '_blank');
+      
+      toast({
+        title: "Pre-Order Submitted!",
+        description: "Thank you! We're redirecting you to WhatsApp to confirm your order.",
+        variant: "default",
+        duration: 5000,
+      });
+      
+      clearCart();
+      reset();
+      
+      if (onCheckoutSuccess) {
+        onCheckoutSuccess();
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was a problem sending your order. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Pre-order submission error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
