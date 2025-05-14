@@ -1,17 +1,15 @@
 import StoreCard from './StoreCard';
 import type { Canteen } from '@/types';
-import { createBrowserClient } from '@supabase/ssr';
-import type { Database } from '@/types/supabase';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 // This function will run on the server.
 async function getCanteens(): Promise<Canteen[]> {
-  // Create a Supabase client for server-side data fetching
-  // For public data, anon key is sufficient.
-  // Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your environment.
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // Prevent caching of this data
+  noStore();
+  
+  // Use the server client
+  const supabase = getSupabaseServerClient();
 
   const { data, error } = await supabase
     .from('canteens')

@@ -2,8 +2,12 @@ import HeroSection from '@/components/layout/HeroSection';
 import ProductList from '@/components/product/ProductList';
 import StoreList from '@/components/store/StoreList';
 import { Separator } from '@/components/ui/separator';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export default function HomePage() {
+  // Mencegah caching pada level halaman
+  noStore();
+  
   return (
     <div className="space-y-12">
       <HeroSection />

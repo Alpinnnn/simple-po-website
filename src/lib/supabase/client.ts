@@ -7,7 +7,7 @@ import { createBrowserClient } from '@supabase/ssr';
 let client: ReturnType<typeof createBrowserClient<Database>> | undefined;
 
 export function getSupabaseBrowserClient() {
-  if (client) {
+  if (typeof window !== 'undefined' && client) {
     return client;
   }
 

@@ -5,6 +5,7 @@ import { CartProvider } from '@/contexts/CartContext';
 import Header from '@/components/layout/Header';
 import { Toaster } from "@/components/ui/toaster";
 import SmoothScrollProvider from '@/providers/SmoothScrollProvider';
+import AnimatedFoodIcons from '@/components/layout/AnimatedFoodIcons';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -46,6 +47,11 @@ export const metadata: Metadata = {
     images: ['/twitter-image.jpg'],
     creator: '@orderease',
   },
+  other: {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+  },
 };
 
 export const viewport: Viewport = {
@@ -64,6 +70,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased flex flex-col min-h-screen`}>
         <SmoothScrollProvider>
           <CartProvider>
+            <AnimatedFoodIcons />
             <Header />
             <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
               {children}

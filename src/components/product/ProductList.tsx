@@ -1,7 +1,7 @@
 import ProductCard from './ProductCard';
 import type { FoodProduct, Canteen } from '@/types';
-import { createBrowserClient } from '@supabase/ssr';
-import type { Database } from '@/types/supabase';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { unstable_noStore as noStore } from 'next/cache';
 
 // Interface untuk produk yang sudah termasuk data kantin
 interface ProductWithCanteen extends Omit<FoodProduct, 'canteen_id'> {
@@ -10,19 +10,19 @@ interface ProductWithCanteen extends Omit<FoodProduct, 'canteen_id'> {
 }
 
 async function getProductsWithCanteens(): Promise<ProductWithCanteen[]> {
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // Prevent caching of this data
+  noStore();
+  
+  // Use the server client
+  const supabase = getSupabaseServerClient();
 
-  // Mengambil produk dengan join ke tabel kantin
+  // Mengambil semua produk dengan join ke tabel kantin tanpa filter is_available
   const { data, error } = await supabase
     .from('foods')
     .select(`
       *,
       canteen:canteens(*)
-    `)
-    .eq('is_available', true);
+    `);
 
   if (error) {
     console.error('Error fetching products with canteens:', error);
@@ -40,9 +40,19 @@ export default async function ProductList() {
     return <p className="text-center text-muted-foreground">No products available at the moment.</p>;
   }
 
+  // Mengurutkan produk - produk tersedia ditampilkan lebih dulu
+  const sortedProducts = [...productsWithCanteens].sort((a, b) => {
+    // Produk yang tersedia (is_available === true) akan berada di depan
+    if (a.is_available === true && b.is_available !== true) return -1;
+    if (a.is_available !== true && b.is_available === true) return 1;
+    
+    // Jika keduanya sama-sama tersedia atau tidak tersedia, urutkan berdasarkan nama
+    return a.name.localeCompare(b.name);
+  });
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {productsWithCanteens.map((product) => (
+      {sortedProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
     </div>
