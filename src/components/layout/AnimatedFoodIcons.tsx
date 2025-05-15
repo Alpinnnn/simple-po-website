@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { Coffee, Pizza, Apple, Cookie, Sandwich, IceCream, Beef, Cake, EggFried, Salad, UtensilsCrossed, Croissant, Banana, Drumstick, Cherry, Beer, Candy, Fish, Soup, Carrot, Egg } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -29,8 +29,8 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
       setTimeout(() => {
         setIsGlowing(false);
         
-        // Jeda sebelum menyala lagi
-        setTimeout(setRandomGlow, Math.random() * 5000 + 2000); // 2-7 detik
+        // Jeda sebelum menyala lagi (diperpanjang untuk mengurangi perubahan state)
+        setTimeout(setRandomGlow, Math.random() * 10000 + 5000); // 5-15 detik
       }, glowDuration);
     };
     
@@ -41,7 +41,7 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
   }, [data.delay]);
 
   // Menentukan style CSS untuk animasi linear
-  const getAnimationStyle = () => {
+  const animationStyle = useMemo(() => {
     const viewportPercentage = data.initialPosition;
     
     if (data.reverse) {
@@ -73,7 +73,7 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
         '--initial-position': `${viewportPercentage}vw`,
       } as React.CSSProperties;
     }
-  };
+  }, [data.initialPosition, data.reverse, data.scale, data.duration]);
 
   return (
     <div
@@ -83,7 +83,7 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
       )}
       style={{
         top: `${data.row * 32}px`, // Spacing yang lebih kecil antar baris
-        ...getAnimationStyle()
+        ...animationStyle
       }}
     >
       {icon}
@@ -91,9 +91,31 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
   );
 };
 
+// Custom hook untuk deteksi mobile
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Check awal
+    checkMobile();
+
+    // Tambahkan event listener untuk resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
+
 export default function AnimatedFoodIcons() {
-  // Daftar ikon makanan yang tersedia (ditambahkan lebih banyak ikon)
-  const foodIcons = [
+  // Daftar ikon makanan yang tersedia
+  const foodIcons = useMemo(() => [
     <Pizza key="pizza" size={28} />,
     <Coffee key="coffee" size={26} />,
     <Apple key="apple" size={24} />,
@@ -115,26 +137,32 @@ export default function AnimatedFoodIcons() {
     <Soup key="soup" size={28} />,
     <Carrot key="carrot" size={26} />,
     <Egg key="boiledegg" size={24} />
-  ];
+  ], []);
   
   const [mounted, setMounted] = useState(false);
   const [icons, setIcons] = useState<AnimatedIconData[]>([]);
-  const totalRows = 25; // Meningkatkan jumlah baris untuk memenuhi layar
-  const rowLastAddTime = useRef<number[]>(Array(totalRows).fill(0));
+  const isMobile = useIsMobile();
+  
+  // Menentukan jumlah baris dan ikon berdasarkan perangkat
+  const totalRows = useMemo(() => isMobile ? 10 : 20, [isMobile]); // Lebih sedikit baris untuk mobile
+  const iconsPerRow = useMemo(() => isMobile ? 2 : 4, [isMobile]); // Lebih sedikit ikon per baris untuk mobile
+  const iconInterval = useMemo(() => isMobile ? 8000 : 6000, [isMobile]); // Interval yang lebih lama untuk mobile
+  
+  const rowLastAddTime = useRef<number[]>(Array(25).fill(0)); // Tetap menggunakan 25 sebagai ukuran maksimum
   
   // Fungsi untuk membuat ikon baru
-  const createIcon = (row: number, reverse: boolean, initialPosition = 0): AnimatedIconData => {
+  const createIcon = useCallback((row: number, reverse: boolean, initialPosition = 0): AnimatedIconData => {
     return {
-      id: `icon-${Math.random().toString(36).substr(2, 9)}`,
+      id: `icon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       iconIndex: Math.floor(Math.random() * foodIcons.length),
       row,
-      delay: Math.random() * 2000, // 0-2 detik delay untuk glow
-      duration: 50 + Math.random() * 30, // 50-80 detik (durasi yang lebih singkat untuk menghindari penumpukan)
+      delay: Math.random() * 5000, // 0-5 detik delay untuk glow
+      duration: 80 + Math.random() * 40, // 80-120 detik (durasi yang lebih lama untuk mengurangi jumlah ikon yang perlu dibuat)
       scale: Math.random() * 0.3 + 0.9, // 0.9-1.2
       reverse,
       initialPosition
     };
-  };
+  }, [foodIcons]);
   
   // Menghapus ikon yang sudah kedaluwarsa (melebihi durasi animasi)
   useEffect(() => {
@@ -146,12 +174,13 @@ export default function AnimatedFoodIcons() {
       setIcons(prevIcons => {
         // Filter ikon yang masih dalam waktu animasi
         return prevIcons.filter(icon => {
-          const creationTime = parseInt(icon.id.split('-')[1], 36) || 0;
+          const iconTimestamp = icon.id.split('-')[1];
+          const creationTime = iconTimestamp ? parseInt(iconTimestamp) : 0;
           const elapsedSeconds = (currentTime - creationTime) / 1000;
           return elapsedSeconds < icon.duration;
         });
       });
-    }, 10000); // Cek setiap 10 detik
+    }, 15000); // Cek setiap 15 detik (lebih jarang)
     
     return () => clearInterval(interval);
   }, [mounted]);
@@ -171,8 +200,8 @@ export default function AnimatedFoodIcons() {
         const reverse = row % 2 === 1; // Baris ganjil bergerak dari kanan ke kiri
         const lastAddedTime = rowLastAddTime.current[row];
         
-        // Minimal 6 detik antara penambahan ikon pada baris yang sama (lebih sering)
-        if (currentTime - lastAddedTime > 6000) {
+        // Interval yang lebih lama antara penambahan ikon
+        if (currentTime - lastAddedTime > iconInterval) {
           // Tambahkan ikon baru pada baris ini
           const newIcon = createIcon(row, reverse, 0);
           newIcons.push(newIcon);
@@ -187,11 +216,11 @@ export default function AnimatedFoodIcons() {
       }
     };
     
-    // Cek setiap 1.5 detik untuk menambahkan ikon baru (lebih sering)
-    const interval = setInterval(checkAndAddIcons, 1500);
+    // Cek dengan interval yang lebih lama (4 detik)
+    const interval = setInterval(checkAndAddIcons, 4000);
     
     return () => clearInterval(interval);
-  }, [mounted]);
+  }, [mounted, totalRows, iconInterval, createIcon]);
   
   // Inisialisasi ikon-ikon awal
   useEffect(() => {
@@ -206,9 +235,7 @@ export default function AnimatedFoodIcons() {
     for (let row = 0; row < totalRows; row++) {
       const reverse = row % 2 === 1; // Baris ganjil bergerak dari kanan ke kiri
       
-      // Tambahkan 5-6 ikon per baris dengan posisi tersebar (lebih banyak)
-      const iconsPerRow = Math.floor(Math.random() * 2) + 5; // 5-6 ikon
-      
+      // Tambahkan ikon per baris dengan posisi tersebar
       for (let i = 0; i < iconsPerRow; i++) {
         // Posisi awal ikon dalam persentase viewport width (0-100)
         // Memastikan tersebar merata di sepanjang viewport
@@ -222,7 +249,7 @@ export default function AnimatedFoodIcons() {
     }
     
     setIcons(initialIcons);
-  }, [mounted]);
+  }, [mounted, totalRows, iconsPerRow, createIcon]);
 
   if (!mounted) return null;
 
@@ -231,19 +258,19 @@ export default function AnimatedFoodIcons() {
       <style jsx global>{`
         @keyframes moveIcon {
           from {
-            transform: translateX(var(--initial-position, 0));
+            transform: translateX(var(--initial-position, 0)) scale(var(--scale, 1));
           }
           to {
-            transform: translateX(100vw);
+            transform: translateX(100vw) scale(var(--scale, 1));
           }
         }
         
         @keyframes moveIconReverse {
           from {
-            transform: translateX(calc(-1 * var(--initial-position, 0)));
+            transform: translateX(calc(-1 * var(--initial-position, 0))) scale(var(--scale, 1));
           }
           to {
-            transform: translateX(-100vw);
+            transform: translateX(-100vw) scale(var(--scale, 1));
           }
         }
       `}</style>
