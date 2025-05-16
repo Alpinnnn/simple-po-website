@@ -6,8 +6,11 @@ Aplikasi pre-order modern berbasis web dengan integrasi WhatsApp untuk restoran,
 
 - ✅ Tampilan responsif untuk desktop & mobile
 - ✅ Daftar produk dengan gambar, deskripsi, dan harga
-- ✅ Keranjang belanja interaktif dengan perhitungan total
+- ✅ Keranjang belanja interaktif dengan tombol melayang di pojok kanan bawah
+- ✅ Animasi background dengan ikon makanan yang bergerak (khusus desktop)
+- ✅ Notifikasi toast yang menarik saat item ditambahkan ke keranjang
 - ✅ Form checkout dengan validasi data
+- ✅ Sistem kunci alamat pengiriman yang dapat dikonfigurasi
 - ✅ Integrasi WhatsApp untuk pengiriman pesanan
 - ✅ Theme warna yang dapat disesuaikan
 - ✅ Mata uang yang dapat dikonfigurasi (IDR, USD, dll)
@@ -69,6 +72,10 @@ NEXT_PUBLIC_ADMIN_WHATSAPP="+62812345678"
 NEXT_PUBLIC_CURRENCY_SYMBOL="Rp"
 NEXT_PUBLIC_CURRENCY_CODE="IDR"
 NEXT_PUBLIC_CURRENCY_LOCALE="id-ID"
+
+# Konfigurasi Alamat Pengiriman
+NEXT_PUBLIC_DELIVERY_INPUT="free" # Nilai: "free" atau "locked"
+NEXT_PUBLIC_DELIVERY_ADDRESS="Alamat default saat mode locked"
 ```
 
 4. Jalankan server development
@@ -99,6 +106,11 @@ Aplikasi ini menggunakan environment variables untuk konfigurasi utama:
    - `NEXT_PUBLIC_CURRENCY_CODE`: Kode mata uang (contoh: "IDR", "USD", "EUR")
    - `NEXT_PUBLIC_CURRENCY_LOCALE`: Locale untuk format angka (contoh: "id-ID", "en-US")
    - Default: "$" dengan kode "USD" dan locale "en-US"
+
+3. **Alamat Pengiriman**
+   - `NEXT_PUBLIC_DELIVERY_INPUT`: Mode input alamat ("free" atau "locked")
+   - `NEXT_PUBLIC_DELIVERY_ADDRESS`: Alamat default jika mode "locked"
+   - Nilai default: "free" (pelanggan dapat mengisi alamat sendiri)
 
 Anda dapat mengubah konfigurasi ini dengan membuat file `.env.local` di root project, atau mengatur environment variables di platform deployment Anda (Vercel, Netlify, dll).
 
@@ -154,7 +166,11 @@ const lenisInstance = new Lenis({
 });
 ```
 
-#### Animasi dengan GSAP
+#### Animasi Background
+
+Aplikasi menampilkan animasi background dengan ikon makanan yang bergerak dan berkedip secara acak. Animasi ini hanya aktif pada tampilan desktop (> 426px). Anda dapat mengatur jumlah, kecepatan, dan sifat animasi di file `src/components/layout/AnimatedFoodIcons.tsx`.
+
+#### Animasi GSAP
 
 Produk-produk dalam aplikasi dianimasikan saat muncul di viewport menggunakan GSAP ScrollTrigger. Animasi dapat disesuaikan di `src/providers/SmoothScrollProvider.tsx`:
 
@@ -189,15 +205,16 @@ Untuk menonaktifkan animasi, Anda dapat menghapus inisialisasi GSAP di file `Smo
 
 1. **Browse Menu**: Lihat daftar produk yang tersedia
 2. **Tambah ke Keranjang**: Klik tombol "Add to Cart" pada produk yang diinginkan
-3. **Lihat Keranjang**: Klik icon keranjang di header untuk melihat items yang sudah ditambahkan
+3. **Lihat Keranjang**: Klik tombol keranjang melayang di pojok kanan bawah untuk melihat items
 4. **Checkout**: Isi form dengan data diri (nama, telepon, alamat)
 5. **Kirim Pesanan**: Klik "Submit Pre-Order" dan aplikasi akan membuka WhatsApp dengan pesanan yang sudah diformat
 6. **Konfirmasi di WhatsApp**: Klik tombol kirim di WhatsApp untuk mengirim pesanan ke admin
 
 ### Untuk Admin
 
-1. **Terima Pesanan**: Pesanan akan masuk melalui WhatsApp dengan format yang terstruktur
-2. **Kelola Menu**: (Coming soon) Panel admin untuk menambah/mengedit/menghapus produk
+1. **Konfigurasi Alamat**: Atur mode alamat pengiriman ("free" atau "locked") melalui environment variable
+2. **Terima Pesanan**: Pesanan akan masuk melalui WhatsApp dengan format yang terstruktur
+3. **Kelola Menu**: (Coming soon) Panel admin untuk menambah/mengedit/menghapus produk
 
 ## Pengembangan Selanjutnya
 
@@ -209,6 +226,10 @@ Beberapa fitur yang dapat ditambahkan pada pengembangan selanjutnya:
 4. Riwayat pesanan untuk pelanggan
 5. Sistem notifikasi
 6. Pembayaran online
+
+## Changelog
+
+Untuk melihat daftar perubahan terbaru, silakan lihat [CHANGELOG.md](CHANGELOG.md)
 
 ## Kontribusi
 
