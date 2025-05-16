@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header';
 import { Toaster } from "@/components/ui/toaster";
 import SmoothScrollProvider from '@/providers/SmoothScrollProvider';
 import AnimatedFoodIcons from '@/components/layout/AnimatedFoodIcons';
+import FloatingCartButton from '@/components/cart/FloatingCartButton';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -78,6 +79,7 @@ export default function RootLayout({
             <footer className="bg-muted text-muted-foreground py-6 text-center">
               <p>&copy; {new Date().getFullYear()} OrderEase. All rights reserved.</p>
             </footer>
+            <FloatingCartButton />
             <Toaster />
           </CartProvider>
         </SmoothScrollProvider>

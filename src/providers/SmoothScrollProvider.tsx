@@ -11,17 +11,38 @@ export default function SmoothScrollProvider({
   children: React.ReactNode 
 }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
+  const [isMobile, setIsMobile] = useState(true); // Default true untuk mencegah animasi sebelum deteksi
+
+  // Deteksi mobile dengan batasan baru 426px
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobileScreen = window.innerWidth < 426;
+      setIsMobile(mobileScreen);
+      console.log('[SmoothScroll] Screen width:', window.innerWidth, 'Is Mobile:', mobileScreen);
+    };
+
+    // Check awal
+    checkMobile();
+
+    // Tambahkan event listener untuk resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Inisialisasi Lenis dan GSAP
   useEffect(() => {
+    console.log('[SmoothScroll] Initializing with isMobile:', isMobile);
+    
     // Register GSAP plugins
     gsap.registerPlugin(ScrollTrigger);
     
-    // Buat instance Lenis
+    // Buat instance Lenis (Tetap aktif di mobile untuk smooth scrolling)
     const lenisInstance = new Lenis({
-      duration: 1.2,
+      duration: isMobile ? 0.8 : 1.2, // Durasi lebih pendek untuk mobile
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      wheelMultiplier: 1,
+      wheelMultiplier: isMobile ? 0.8 : 1, // Multiplier lebih kecil untuk mobile
     });
 
     // Integrasi Lenis dengan GSAP
@@ -37,22 +58,33 @@ export default function SmoothScrollProvider({
     // Set Lenis instance ke state
     setLenis(lenisInstance);
 
-    // Inisialisasi animasi card
-    initializeCardAnimations();
+    // Inisialisasi animasi card hanya jika bukan mobile
+    if (!isMobile) {
+      console.log('[SmoothScroll] Initializing card animations for desktop');
+      setTimeout(() => {
+        initializeCardAnimations();
+      }, 500); // Delay untuk memastikan DOM telah dirender
+    } else {
+      console.log('[SmoothScroll] Skipping card animations for mobile');
+    }
 
     // Cleanup pada unmount
     return () => {
+      console.log('[SmoothScroll] Cleaning up');
       lenisInstance.destroy();
       gsap.ticker.remove((time) => {
         lenisInstance.raf(time * 1000);
       });
     };
-  }, []);
+  }, [isMobile]); // Tambahkan isMobile sebagai dependency
 
   // Inisialisasi animasi card
   const initializeCardAnimations = () => {
     // Animasi untuk card produk
-    gsap.utils.toArray<HTMLElement>('.product-card').forEach((card, i) => {
+    const productCards = gsap.utils.toArray<HTMLElement>('.product-card');
+    console.log('[SmoothScroll] Found', productCards.length, 'product cards to animate');
+    
+    productCards.forEach((card, i) => {
       gsap.fromTo(
         card,
         {

@@ -91,13 +91,17 @@ const IconRenderer = ({ data, icon }: { data: AnimatedIconData, icon: React.Reac
   );
 };
 
-// Custom hook untuk deteksi mobile
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+export default function AnimatedFoodIcons() {
+  const [mounted, setMounted] = useState(false);
+  const [icons, setIcons] = useState<AnimatedIconData[]>([]);
+  const [isMobile, setIsMobile] = useState(true); // Default ke true untuk mencegah rendering awal
 
+  // Effect untuk deteksi ukuran layar
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const isMobileScreen = window.innerWidth < 426;
+      setIsMobile(isMobileScreen);
+      console.log('Screen width:', window.innerWidth, 'Is Mobile:', isMobileScreen);
     };
 
     // Check awal
@@ -106,14 +110,11 @@ const useIsMobile = () => {
     // Tambahkan event listener untuk resize
     window.addEventListener('resize', checkMobile);
     
-    // Cleanup
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
 
-  return isMobile;
-};
-
-export default function AnimatedFoodIcons() {
   // Daftar ikon makanan yang tersedia
   const foodIcons = useMemo(() => [
     <Pizza key="pizza" size={28} />,
@@ -139,16 +140,12 @@ export default function AnimatedFoodIcons() {
     <Egg key="boiledegg" size={24} />
   ], []);
   
-  const [mounted, setMounted] = useState(false);
-  const [icons, setIcons] = useState<AnimatedIconData[]>([]);
-  const isMobile = useIsMobile();
+  // Konfigurasi animasi
+  const totalRows = 20;
+  const iconsPerRow = 4;
+  const iconInterval = 6000;
   
-  // Menentukan jumlah baris dan ikon berdasarkan perangkat
-  const totalRows = useMemo(() => isMobile ? 10 : 20, [isMobile]); // Lebih sedikit baris untuk mobile
-  const iconsPerRow = useMemo(() => isMobile ? 2 : 4, [isMobile]); // Lebih sedikit ikon per baris untuk mobile
-  const iconInterval = useMemo(() => isMobile ? 8000 : 6000, [isMobile]); // Interval yang lebih lama untuk mobile
-  
-  const rowLastAddTime = useRef<number[]>(Array(25).fill(0)); // Tetap menggunakan 25 sebagai ukuran maksimum
+  const rowLastAddTime = useRef<number[]>(Array(25).fill(0));
   
   // Fungsi untuk membuat ikon baru
   const createIcon = useCallback((row: number, reverse: boolean, initialPosition = 0): AnimatedIconData => {
@@ -157,75 +154,18 @@ export default function AnimatedFoodIcons() {
       iconIndex: Math.floor(Math.random() * foodIcons.length),
       row,
       delay: Math.random() * 5000, // 0-5 detik delay untuk glow
-      duration: 80 + Math.random() * 40, // 80-120 detik (durasi yang lebih lama untuk mengurangi jumlah ikon yang perlu dibuat)
+      duration: 80 + Math.random() * 40, // 80-120 detik
       scale: Math.random() * 0.3 + 0.9, // 0.9-1.2
       reverse,
       initialPosition
     };
   }, [foodIcons]);
   
-  // Menghapus ikon yang sudah kedaluwarsa (melebihi durasi animasi)
+  // Inisialisasi animasi
   useEffect(() => {
-    if (!mounted) return;
+    if (mounted || isMobile) return;
     
-    const interval = setInterval(() => {
-      const currentTime = Date.now();
-      
-      setIcons(prevIcons => {
-        // Filter ikon yang masih dalam waktu animasi
-        return prevIcons.filter(icon => {
-          const iconTimestamp = icon.id.split('-')[1];
-          const creationTime = iconTimestamp ? parseInt(iconTimestamp) : 0;
-          const elapsedSeconds = (currentTime - creationTime) / 1000;
-          return elapsedSeconds < icon.duration;
-        });
-      });
-    }, 15000); // Cek setiap 15 detik (lebih jarang)
-    
-    return () => clearInterval(interval);
-  }, [mounted]);
-  
-  // Regenerasi ikon secara berkala dengan memastikan jarak yang tepat
-  useEffect(() => {
-    if (!mounted) return;
-    
-    const checkAndAddIcons = () => {
-      const currentTime = Date.now();
-      
-      // Array untuk menyimpan ikon baru
-      const newIcons: AnimatedIconData[] = [];
-      
-      // Cek setiap baris
-      for (let row = 0; row < totalRows; row++) {
-        const reverse = row % 2 === 1; // Baris ganjil bergerak dari kanan ke kiri
-        const lastAddedTime = rowLastAddTime.current[row];
-        
-        // Interval yang lebih lama antara penambahan ikon
-        if (currentTime - lastAddedTime > iconInterval) {
-          // Tambahkan ikon baru pada baris ini
-          const newIcon = createIcon(row, reverse, 0);
-          newIcons.push(newIcon);
-          
-          // Update waktu terakhir ditambahkan
-          rowLastAddTime.current[row] = currentTime;
-        }
-      }
-      
-      if (newIcons.length > 0) {
-        setIcons(prev => [...prev, ...newIcons]);
-      }
-    };
-    
-    // Cek dengan interval yang lebih lama (4 detik)
-    const interval = setInterval(checkAndAddIcons, 4000);
-    
-    return () => clearInterval(interval);
-  }, [mounted, totalRows, iconInterval, createIcon]);
-  
-  // Inisialisasi ikon-ikon awal
-  useEffect(() => {
-    if (mounted) return;
-    
+    console.log('Initializing animation, isMobile:', isMobile);
     setMounted(true);
     
     // Inisialisasi dengan beberapa ikon untuk setiap baris
@@ -238,7 +178,6 @@ export default function AnimatedFoodIcons() {
       // Tambahkan ikon per baris dengan posisi tersebar
       for (let i = 0; i < iconsPerRow; i++) {
         // Posisi awal ikon dalam persentase viewport width (0-100)
-        // Memastikan tersebar merata di sepanjang viewport
         const initialPosition = (i * 100) / iconsPerRow;
         
         initialIcons.push(createIcon(row, reverse, initialPosition));
@@ -248,11 +187,69 @@ export default function AnimatedFoodIcons() {
       rowLastAddTime.current[row] = currentTime;
     }
     
+    console.log('Setting initial icons:', initialIcons.length);
     setIcons(initialIcons);
-  }, [mounted, totalRows, iconsPerRow, createIcon]);
+  }, [mounted, isMobile, createIcon]);
+  
+  // Menghapus ikon yang sudah kedaluwarsa dan menambahkan ikon baru
+  useEffect(() => {
+    if (!mounted || isMobile) return;
+    
+    console.log('Setting up cleanup and regeneration, isMobile:', isMobile);
+    
+    // Menghapus ikon yang kedaluwarsa
+    const cleanupInterval = setInterval(() => {
+      const currentTime = Date.now();
+      
+      setIcons(prevIcons => {
+        return prevIcons.filter(icon => {
+          const iconTimestamp = icon.id.split('-')[1];
+          const creationTime = iconTimestamp ? parseInt(iconTimestamp) : 0;
+          const elapsedSeconds = (currentTime - creationTime) / 1000;
+          return elapsedSeconds < icon.duration;
+        });
+      });
+    }, 15000);
+    
+    // Menambahkan ikon baru secara berkala
+    const regenerationInterval = setInterval(() => {
+      const currentTime = Date.now();
+      const newIcons: AnimatedIconData[] = [];
+      
+      for (let row = 0; row < totalRows; row++) {
+        const reverse = row % 2 === 1;
+        const lastAddedTime = rowLastAddTime.current[row];
+        
+        if (currentTime - lastAddedTime > iconInterval) {
+          newIcons.push(createIcon(row, reverse, 0));
+          rowLastAddTime.current[row] = currentTime;
+        }
+      }
+      
+      if (newIcons.length > 0) {
+        console.log('Adding new icons:', newIcons.length);
+        setIcons(prev => [...prev, ...newIcons]);
+      }
+    }, 4000);
+    
+    return () => {
+      clearInterval(cleanupInterval);
+      clearInterval(regenerationInterval);
+    };
+  }, [mounted, isMobile, createIcon]);
 
-  if (!mounted) return null;
+  // Debugging
+  useEffect(() => {
+    console.log('Component state - mounted:', mounted, 'isMobile:', isMobile, 'icons count:', icons.length);
+  }, [mounted, isMobile, icons.length]);
 
+  // Jika layar mobile atau belum ter-mount, tidak menampilkan animasi
+  if (isMobile || !mounted) {
+    console.log('Not rendering animation - isMobile:', isMobile, 'mounted:', mounted);
+    return null;
+  }
+
+  console.log('Rendering animation with', icons.length, 'icons');
   return (
     <div className="fixed inset-0 w-full h-full -z-10 overflow-hidden pointer-events-none" style={{ minHeight: '200vh' }}>
       <style jsx global>{`

@@ -1,7 +1,7 @@
 // src/components/cart/CheckoutForm.tsx
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -14,6 +14,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatSimpleCurrency, CurrencySettings } from '@/lib';
+import { Lock, Unlock } from 'lucide-react';
 
 const checkoutSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -32,20 +33,43 @@ interface CheckoutFormProps {
 // Nomor WhatsApp admin untuk dikirimkan pre-order
 // Menggunakan environment variable dengan fallback ke nomor default jika tidak tersedia
 const ADMIN_WHATSAPP = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP;
+const DELIVERY_INPUT = process.env.NEXT_PUBLIC_DELIVERY_INPUT;
+const DELIVERY_ADDRESS = process.env.NEXT_PUBLIC_DELIVERY_ADDRESS;
 
 export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: CheckoutFormProps) {
   const { cartItems, getCartTotal, clearCart } = useCart();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddressLocked, setIsAddressLocked] = useState(false);
+  const [defaultAddress, setDefaultAddress] = useState('');
+
+  // Menentukan apakah input alamat terkunci atau tidak
+  useEffect(() => {
+    if (DELIVERY_INPUT === 'locked' && DELIVERY_ADDRESS) {
+      setIsAddressLocked(true);
+      setDefaultAddress(DELIVERY_ADDRESS);
+    } else {
+      setIsAddressLocked(false);
+      setDefaultAddress('');
+    }
+  }, []);
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
   });
+
+  // Set nilai default alamat jika terkunci
+  useEffect(() => {
+    if (isAddressLocked && defaultAddress) {
+      setValue('address', defaultAddress);
+    }
+  }, [isAddressLocked, defaultAddress, setValue]);
 
   // Fungsi untuk format pesan WhatsApp
   const formatWhatsAppMessage = (formData: CheckoutFormValues) => {
@@ -116,6 +140,45 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
     return null;
   }
 
+  // Render input alamat berdasarkan kondisi isAddressLocked
+  const renderAddressInput = (id: string) => {
+    if (isAddressLocked) {
+      return (
+        <div className="relative">
+          <Input 
+            id={id} 
+            {...register("address")} 
+            className="mt-1 bg-muted h-10" 
+            value={defaultAddress}
+            readOnly
+            onClick={() => {
+              toast({
+                title: "Alamat Pengiriman Terkunci",
+                description: `Saat ini hanya dapat dikirim ke ${DELIVERY_ADDRESS}`,
+                variant: "warning",
+                duration: 3000,
+              });
+            }}
+          />
+          <Lock className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+        </div>
+      );
+    } else {
+      return (
+        <div className="relative">
+          <Textarea 
+            id={id} 
+            {...register("address")} 
+            className="mt-1 min-h-[100px]" 
+            aria-invalid={errors.address ? "true" : "false"} 
+          />
+          <Unlock className="absolute right-3 top-3 h-4 w-4 text-muted-foreground" />
+          {errors.address && <p className="text-sm text-destructive mt-1">{errors.address.message}</p>}
+        </div>
+      );
+    }
+  };
+
   // Modal rendering: no Card wrapper, different title if needed
   if (isModal) {
     return (
@@ -135,9 +198,11 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
           </div>
 
           <div>
-            <Label htmlFor="addressCFM">Delivery Address</Label>
-            <Textarea id="addressCFM" {...register("address")} className="mt-1 min-h-[100px]" aria-invalid={errors.address ? "true" : "false"} />
-            {errors.address && <p className="text-sm text-destructive mt-1">{errors.address.message}</p>}
+            <Label htmlFor="addressCFM" className="flex items-center gap-2">
+              Delivery Address
+              {isAddressLocked && <span className="text-xs text-muted-foreground">(Fixed by Admin)</span>}
+            </Label>
+            {renderAddressInput("addressCFM")}
           </div>
 
           <div>
@@ -175,9 +240,11 @@ export default function CheckoutForm({ onCheckoutSuccess, isModal = false }: Che
           </div>
 
           <div>
-            <Label htmlFor="addressPage">Delivery Address</Label>
-            <Textarea id="addressPage" {...register("address")} className="mt-1 min-h-[100px]" aria-invalid={errors.address ? "true" : "false"} />
-            {errors.address && <p className="text-sm text-destructive mt-1">{errors.address.message}</p>}
+            <Label htmlFor="addressPage" className="flex items-center gap-2">
+              Delivery Address
+              {isAddressLocked && <span className="text-xs text-muted-foreground">(Fixed by Admin)</span>}
+            </Label>
+            {renderAddressInput("addressPage")}
           </div>
 
           <div>

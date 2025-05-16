@@ -1,9 +1,33 @@
+"use client";
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function HeroSection() {
+  const [isMobile, setIsMobile] = useState(true);
+  
+  // Effect untuk deteksi ukuran layar
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobileScreen = window.innerWidth < 426;
+      setIsMobile(mobileScreen);
+      console.log('[HeroSection] Screen width:', window.innerWidth, 'Is Mobile:', mobileScreen);
+    };
+
+    // Check awal
+    checkMobile();
+
+    // Tambahkan event listener untuk resize
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+  
   return (
     <section className="py-16 md:py-24 bg-card rounded-xl shadow-2xl">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
@@ -27,17 +51,20 @@ export default function HeroSection() {
             </Button>
           </div>
         </div>
-        <div className="relative h-64 md:h-96 rounded-lg overflow-hidden shadow-xl group">
-          <Image
-            src="https://picsum.photos/800/600?random=hero"
-            alt="Assortment of pre-orderable products"
-            fill
-            className="object-cover transform group-hover:scale-105 transition-transform duration-500"
-            data-ai-hint="store items"
-            priority
-          />
-           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-75 group-hover:opacity-50 transition-opacity duration-300"></div>
-        </div>
+        {/* Tampilkan gambar hanya jika bukan mobile, menggunakan state dari deteksi ukuran */}
+        {!isMobile && (
+          <div className="relative h-64 md:h-96 rounded-lg overflow-hidden shadow-xl group">
+            <Image
+              src="https://picsum.photos/800/600?random=hero"
+              alt="Assortment of pre-orderable products"
+              fill
+              className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+              data-ai-hint="store items"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-75 group-hover:opacity-50 transition-opacity duration-300"></div>
+          </div>
+        )}
       </div>
     </section>
   );

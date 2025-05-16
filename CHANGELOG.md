@@ -5,6 +5,25 @@ Semua perubahan penting pada proyek ini akan didokumentasikan dalam file ini.
 Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 dan proyek ini menggunakan [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-5-16
+
+### Added
+- Menambahkan tombol cart melayang (floating) di pojok kanan bawah terpisah dari navbar
+- Implementasi sistem kunci untuk input alamat pengiriman berdasarkan nilai NEXT_PUBLIC_DELIVERY_INPUT
+- Menambahkan toast warning ketika input alamat yang terkunci diklik
+
+### Changed
+- Mengubah posisi toast menjadi di pojok kanan atas, di bawah header
+- Mengganti ikon centang dengan ikon keranjang pada toast notifikasi
+- Mematikan animasi background untuk tampilan mobile
+- Mengubah tinggi input alamat yang terkunci menjadi sama seperti input nama dan telepon
+- Mengubah batas ukuran layar untuk animasi background dari 768px menjadi 426px
+
+### Fixed
+- Memperbaiki bug di mana background animasi tidak muncul pada tampilan desktop
+- Menambahkan direktif "use client" pada HeroSection.tsx untuk mengatasi error hooks React
+- Menghapus gambar hero section pada tampilan mobile untuk pengalaman yang lebih baik
+
 ## [2.1.0] - 2025-5-14
 
 ### Added

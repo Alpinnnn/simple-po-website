@@ -3,6 +3,7 @@
 import type { FoodProduct, CartItem } from '@/types'; // Updated to FoodProduct
 import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { ShoppingCart, AlertCircle, Trash2 } from 'lucide-react';
 
 interface CartContextType {
   cartItems: CartItem[]; // CartItem now uses FoodProduct
@@ -32,10 +33,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       return [...prevItems, { product, quantity }];
     });
+    
+    // Notifikasi yang lebih menarik tanpa ikon pada deskripsi
     toast({
-      title: "Item Added",
-      description: `${product.name} has been added to your cart.`,
-      variant: "default", // "default" usually maps to a success-like style
+      title: "Item Ditambahkan",
+      description: (
+        <div>
+          <span><strong>{product.name}</strong> telah ditambahkan ke keranjang.</span>
+        </div>
+      ),
+      variant: "success", // Menggunakan varian success yang baru
+      duration: 3000, // 3 detik
     });
   }, [toast]);
 
@@ -44,9 +52,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const itemToRemove = prevItems.find(item => item.product.id === productId);
       if (itemToRemove) {
         toast({
-          title: "Item Removed",
-          description: `${itemToRemove.product.name} has been removed from your cart.`,
+          title: "Item Dihapus",
+          description: (
+            <div>
+              <span><strong>{itemToRemove.product.name}</strong> telah dihapus dari keranjang.</span>
+            </div>
+          ),
           variant: "destructive",
+          duration: 3000,
         });
       }
       return prevItems.filter((item) => item.product.id !== productId);
@@ -54,20 +67,41 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [toast]);
 
   const updateQuantity = useCallback((productId: string, quantity: number) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
+    setCartItems((prevItems) => {
+      const prevItem = prevItems.find(item => item.product.id === productId);
+      const updatedItems = prevItems.map((item) =>
         item.product.id === productId ? { ...item, quantity: Math.max(0, quantity) } : item
-      ).filter(item => item.quantity > 0) // Remove if quantity is 0
-    );
-     // Optionally, add a toast for quantity update
-  }, []);
+      ).filter(item => item.quantity > 0);
+      
+      // Jika item dihapus karena quantity menjadi 0
+      if (prevItem && prevItem.quantity > 0 && quantity <= 0) {
+        toast({
+          title: "Item Dihapus",
+          description: (
+            <div>
+              <span><strong>{prevItem.product.name}</strong> telah dihapus dari keranjang.</span>
+            </div>
+          ),
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+      
+      return updatedItems;
+    });
+  }, [toast]);
 
   const clearCart = useCallback(() => {
     setCartItems([]);
     toast({
-      title: "Cart Cleared",
-      description: "Your shopping cart has been emptied.",
-      variant: "default",
+      title: "Keranjang Dikosongkan",
+      description: (
+        <div>
+          <span>Semua item telah dihapus dari keranjang Anda.</span>
+        </div>
+      ),
+      variant: "warning",
+      duration: 3000,
     });
   }, [toast]);
 
@@ -78,7 +112,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const getTotalItems = useCallback(() => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   }, [cartItems]);
-
 
   return (
     <CartContext.Provider
